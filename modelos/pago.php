@@ -45,8 +45,19 @@ class Pago
 
     public function generarComprobante($idPago)
     {
-      
+      $connect = Conexion::getInstancia()->getPDO();
 
+    $sql = "SELECT * FROM pagos WHERE id_pago = :id_pago";
+
+    $stmt = $connect->prepare($sql);
+
+    $stmt->bindValue(":id_pago", $idPago, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    $pago = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $pago;
     }
 }
 ?>
