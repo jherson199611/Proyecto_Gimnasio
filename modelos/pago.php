@@ -28,14 +28,24 @@ class Pago
     return $filas;
     }
 
+
     public function consultar()
     {
+    $connect = Conexion::getInstancia()->getPDO();
 
+    $sql = "SELECT * FROM pagos";
+
+    $stmt = $connect->prepare($sql);
+    $stmt->execute();
+
+    $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $pagos;
     }
 
     public function generarComprobante($idPago)
     {
-
+      
 
     }
 }
