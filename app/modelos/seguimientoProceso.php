@@ -109,3 +109,121 @@ class seguimientoprogreso {
         return $stmt->fetchall(pdo::fetch_assoc);
     }
 }
+
+$seg = new seguimientoprogreso();
+$db = conexion::conectar();
+$mensaje = "";
+$socio_id = isset($_REQUEST['socio_id']) ? intval($_REQUEST['socio_id']) : 0;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $accion = $_POST['accion'] ?? '';
+
+    if ($accion == 'guardar_medida' && $socio_id > 0) {
+        $ok = $seg->registrarmedida($socio_id, $_POST['peso'], $_POST['altura'], $_POST['cintura'], $_POST['pecho'], $_POST['observaciones']);
+        $mensaje = $ok ? "Medida guardada." : "Error al guardar medida.";
+    }
+
+    if ($accion == 'asignar_rutina' && $socio_id > 0) {
+        $fecha_fin = !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null;
+        $ok = $seg->asignarrutina($socio_id, $_POST['rutina_id'], $_POST['fecha_inicio'], $fecha_fin);
+        $mensaje = $ok ? "Rutina asignada." : "Error al asignar rutina.";
+    }
+}
+
+$socios = $db->query("select id, dni, nombres, apellidos from socios order by id desc")->fetchAll(PDO::FETCH_ASSOC);
+$medidas = $socio_id > 0 ? $seg->listarmedidasporsocio($socio_id) : [];
+$rutinasDisponibles = $socio_id > 0 ? $seg->verrutinasporplansocio($socio_id) : [];
+$rutinaActiva = $socio_id > 0 ? $seg->verrutinaactivasocio($socio_id) : null;
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Seguimiento</title>
+</head>
+<body>
+    <h2>Seguimiento y Rutinas</h2>
+
+    <?php if ($mensaje != ""): ?>
+        <p><b><?php echo $mensaje; ?></b></p>
+    <?php endif; ?>
+
+    <form method="GET">
+        <label>Socio:</label>
+        <select name="socio_id" onchange="this.form.submit()">
+            <option value="">-- Seleccione --</option>
+            <?php foreach ($socios as $s): ?>
+                <option value="<?php echo $s['id']; ?>" <?php echo ($socio_id == $s['id']) ? 'selected' : ''; ?>>
+                    <?php echo $s['dni'] . " - " . $s['nombres'] . " " . $s['apellidos']; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+
+    <?php if ($socio_id > 0): ?>
+        <hr>
+        <h3>Registrar Medida</h3>
+        <form method="POST">
+            <input type="hidden" name="accion" value="guardar_medida">
+            <input type="hidden" name="socio_id" value="<?php echo $socio_id; ?>">
+            Peso: <input type="number" step="0.01" name="peso" required><br><br>
+            Altura: <input type="number" step="0.01" name="altura" required><br><br>
+            Cintura: <input type="number" step="0.01" name="cintura"><br><br>
+            Pecho: <input type="number" step="0.01" name="pecho"><br><br>
+            Observaciones: <input type="text" name="observaciones"><br><br>
+            <button type="submit">Guardar</button>
+        </form>
+
+        <h4>Medidas Registradas</h4>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Fecha</th>
+                <th>Peso</th>
+                <th>Altura</th>
+                <th>Cintura</th>
+                <th>Pecho</th>
+                <th>Observaciones</th>
+            </tr>
+            <?php foreach ($medidas as $m): ?>
+                <tr>
+                    <td><?php echo $m['fecha']; ?></td>
+                    <td><?php echo $m['peso']; ?></td>
+                    <td><?php echo $m['altura']; ?></td>
+                    <td><?php echo $m['cintura']; ?></td>
+                    <td><?php echo $m['pecho']; ?></td>
+                    <td><?php echo $m['observaciones']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+
+        <hr>
+        <h3>Asignar Rutina</h3>
+        <?php if (count($rutinasDisponibles) > 0): ?>
+            <form method="POST">
+                <input type="hidden" name="accion" value="asignar_rutina">
+                <input type="hidden" name="socio_id" value="<?php echo $socio_id; ?>">
+                Rutina:
+                <select name="rutina_id" required>
+                    <?php foreach ($rutinasDisponibles as $r): ?>
+                        <option value="<?php echo $r['id']; ?>">
+                            <?php echo $r['nombre'] . " (" . $r['nivel'] . ")"; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select><br><br>
+                Inicio: <input type="date" name="fecha_inicio" value="<?php echo date('Y-m-d'); ?>" required><br><br>
+                Fin: <input type="date" name="fecha_fin"><br><br>
+                <button type="submit">Asignar</button>
+            </form>
+        <?php else: ?>
+            <p>Sin membresia vigente o sin rutinas en la BD.</p>
+        <?php endif; ?>
+
+        <h4>Rutina Activa</h4>
+        <?php if ($rutinaActiva): ?>
+            <p><?php echo $rutinaActiva['rutina'] . " - Nivel: " . $rutinaActiva['nivel'] . " (Desde: " . $rutinaActiva['fecha_inicio'] . ")"; ?></p>
+        <?php else: ?>
+            <p>Ninguna rutina activa.</p>
+        <?php endif; ?>
+    <?php endif; ?>
+</body>
+</html>
