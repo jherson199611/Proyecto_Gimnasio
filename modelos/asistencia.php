@@ -28,9 +28,20 @@ public function registrar($fecha, $hora, $idSocio)
     return $filas;
 }
 
-    public function consultar()
-    {
+    
+public function consultar()
+{
+    $connect = Conexion::getInstancia()->getPDO();
 
-    }
+    $sql = "SELECT * FROM asistencias";
+
+    $stmt = $connect->prepare($sql);
+
+    $stmt->execute();
+
+    $asistencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $asistencias;
+}
 }
 ?>
