@@ -5,59 +5,61 @@ require_once "../conexion/conn.php";
 
 class Pago
 {
-    public function registrar($fechaPago, $monto, $idMembresia)
+    public function registrar($membresia_id, $fecha, $monto, $metodo, $referencia)
     {
-    $connect = Conexion::getInstancia()->getPDO();
+        $connect = Conexion::getInstancia()->getPDO();
 
-    $sql = "INSERT INTO pagos (fecha_pago, monto, estado, id_membresia)
-            VALUES (:fecha_pago, :monto, :estado, :id_membresia)";
+        $sql = "INSERT INTO pagos (membresia_id, fecha, monto, metodo, referencia)
+                VALUES (:membresia_id, :fecha, :monto, :metodo, :referencia)";
 
-    $stmt = $connect->prepare($sql);
+        $stmt = $connect->prepare($sql);
 
-    $stmt->bindValue(":fecha_pago", $fechaPago, PDO::PARAM_STR);
-    $stmt->bindValue(":monto", $monto);
-    $stmt->bindValue(":estado", "Registrado", PDO::PARAM_STR);
-    $stmt->bindValue(":id_membresia", $idMembresia, PDO::PARAM_INT);
+        $stmt->bindValue(":membresia_id", $membresia_id, PDO::PARAM_INT);
+        $stmt->bindValue(":fecha", $fecha, PDO::PARAM_STR);
+        $stmt->bindValue(":monto", $monto);
+        $stmt->bindValue(":metodo", $metodo, PDO::PARAM_STR);
+        $stmt->bindValue(":referencia", $referencia, PDO::PARAM_STR);
 
-    $stmt->execute();
+        $stmt->execute();
 
-    $filas = $stmt->rowCount();
+        $filas = $stmt->rowCount();
 
-    Conexion::getInstancia()->cerrarConexion();
+        Conexion::getInstancia()->cerrarConexion();
 
-    return $filas;
+        return $filas;
     }
-
 
     public function consultar()
     {
-    $connect = Conexion::getInstancia()->getPDO();
+        $connect = Conexion::getInstancia()->getPDO();
 
-    $sql = "SELECT * FROM pagos";
+        $sql = "SELECT * FROM pagos";
 
-    $stmt = $connect->prepare($sql);
-    $stmt->execute();
+        $stmt = $connect->prepare($sql);
 
-    $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute();
 
-    return $pagos;
+        $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $pagos;
     }
 
     public function generarComprobante($idPago)
     {
-      $connect = Conexion::getInstancia()->getPDO();
+        $connect = Conexion::getInstancia()->getPDO();
 
-    $sql = "SELECT * FROM pagos WHERE id_pago = :id_pago";
+        $sql = "SELECT * FROM pagos WHERE id = :id";
 
-    $stmt = $connect->prepare($sql);
+        $stmt = $connect->prepare($sql);
 
-    $stmt->bindValue(":id_pago", $idPago, PDO::PARAM_INT);
+        $stmt->bindValue(":id", $idPago, PDO::PARAM_INT);
 
-    $stmt->execute();
+        $stmt->execute();
 
-    $pago = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pago = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $pago;
+        return $pago;
     }
 }
+
 ?>
