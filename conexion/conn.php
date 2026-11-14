@@ -6,7 +6,7 @@ class Conexion
     private ?PDO $pdo = null;
 
     private string $host = "localhost";
-    private string $bd   = "techsolutions_db";
+    private string $bd   = "gimnasio_db";
     private string $usuario = "root";
     private string $clave   = "julio";
     private function __construct()

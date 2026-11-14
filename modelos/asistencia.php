@@ -5,43 +5,42 @@ require_once "../conexion/conn.php";
 
 class Asistencia
 {
-    
-public function registrar($fecha, $hora, $idSocio)
-{
-    $connect = Conexion::getInstancia()->getPDO();
+    public function registrar($socio_id, $fecha_hora, $observacion)
+    {
+        $connect = Conexion::getInstancia()->getPDO();
 
-    $sql = "INSERT INTO asistencias (fecha, hora, id_socio)
-            VALUES (:fecha, :hora, :id_socio)";
+        $sql = "INSERT INTO asistencias (socio_id, fecha_hora, observacion)
+                VALUES (:socio_id, :fecha_hora, :observacion)";
 
-    $stmt = $connect->prepare($sql);
+        $stmt = $connect->prepare($sql);
 
-    $stmt->bindValue(":fecha", $fecha, PDO::PARAM_STR);
-    $stmt->bindValue(":hora", $hora, PDO::PARAM_STR);
-    $stmt->bindValue(":id_socio", $idSocio, PDO::PARAM_INT);
+        $stmt->bindValue(":socio_id", $socio_id, PDO::PARAM_INT);
+        $stmt->bindValue(":fecha_hora", $fecha_hora, PDO::PARAM_STR);
+        $stmt->bindValue(":observacion", $observacion, PDO::PARAM_STR);
 
-    $stmt->execute();
+        $stmt->execute();
 
-    $filas = $stmt->rowCount();
+        $filas = $stmt->rowCount();
 
-    Conexion::getInstancia()->cerrarConexion();
+        Conexion::getInstancia()->cerrarConexion();
 
-    return $filas;
+        return $filas;
+    }
+
+    public function consultar()
+    {
+        $connect = Conexion::getInstancia()->getPDO();
+
+        $sql = "SELECT * FROM asistencias";
+
+        $stmt = $connect->prepare($sql);
+
+        $stmt->execute();
+
+        $asistencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $asistencias;
+    }
 }
 
-    
-public function consultar()
-{
-    $connect = Conexion::getInstancia()->getPDO();
-
-    $sql = "SELECT * FROM asistencias";
-
-    $stmt = $connect->prepare($sql);
-
-    $stmt->execute();
-
-    $asistencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    return $asistencias;
-}
-}
 ?>
