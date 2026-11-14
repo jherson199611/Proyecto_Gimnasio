@@ -1,4 +1,3 @@
-1. Código de AsistenciaController.php
 
 <?php
 
@@ -6,14 +5,14 @@ require_once "../modelos/Asistencia.php";
 
 class AsistenciaController
 {
-    public function registrar($fecha, $hora, $idSocio)
+    public function registrar($socio_id, $fecha_hora, $observacion)
     {
         $asistencia = new Asistencia();
 
         return $asistencia->registrar(
-            $fecha,
-            $hora,
-            $idSocio
+            $socio_id,
+            $fecha_hora,
+            $observacion
         );
     }
 
