@@ -1,4 +1,5 @@
 
+
 <?php
 
 require_once "../controladores/pagoController.php";
@@ -7,14 +8,18 @@ $pagoController = new PagoController();
 
 if (isset($_POST["registrar"])) {
 
-    $fechaPago = $_POST["fechaPago"];
+    $membresia_id = $_POST["membresia_id"];
+    $fecha = $_POST["fecha"];
     $monto = $_POST["monto"];
-    $idMembresia = $_POST["idMembresia"];
+    $metodo = $_POST["metodo"];
+    $referencia = $_POST["referencia"];
 
     $resultado = $pagoController->registrar(
-        $fechaPago,
+        $membresia_id,
+        $fecha,
         $monto,
-        $idMembresia
+        $metodo,
+        $referencia
     );
 
     if ($resultado > 0) {
@@ -40,16 +45,29 @@ $pagos = $pagoController->consultar();
 
     <form action="" method="POST">
 
+        <label>ID de Membresía</label>
+        <input type="number" name="membresia_id" min="1" required>
+        <br><br>
+
         <label>Fecha de Pago</label>
-        <input type="date" name="fechaPago" required>
+        <input type="date" name="fecha" required>
         <br><br>
 
         <label>Monto</label>
         <input type="number" name="monto" step="0.01" min="0" required>
         <br><br>
 
-        <label>ID de Membresía</label>
-        <input type="number" name="idMembresia" min="1" required>
+        <label>Método de Pago</label>
+        <select name="metodo" required>
+            <option value="">Seleccionar método</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Yape">Yape</option>
+            <option value="Tarjeta">Tarjeta</option>
+        </select>
+        <br><br>
+
+        <label>Referencia</label>
+        <input type="text" name="referencia" maxlength="100">
         <br><br>
 
         <button type="submit" name="registrar">
@@ -66,18 +84,22 @@ $pagos = $pagoController->consultar();
 
         <tr>
             <th>ID Pago</th>
-            <th>Fecha de Pago</th>
+            <th>ID Membresía</th>
+            <th>Fecha</th>
             <th>Monto</th>
-            <th>Estado</th>
+            <th>Método</th>
+            <th>Referencia</th>
         </tr>
 
         <?php foreach ($pagos as $pago) { ?>
 
         <tr>
-            <td><?php echo $pago["id_pago"]; ?></td>
-            <td><?php echo $pago["fecha_pago"]; ?></td>
+            <td><?php echo $pago["id"]; ?></td>
+            <td><?php echo $pago["membresia_id"]; ?></td>
+            <td><?php echo $pago["fecha"]; ?></td>
             <td><?php echo $pago["monto"]; ?></td>
-            <td><?php echo $pago["estado"]; ?></td>
+            <td><?php echo $pago["metodo"]; ?></td>
+            <td><?php echo $pago["referencia"]; ?></td>
         </tr>
 
         <?php } ?>
