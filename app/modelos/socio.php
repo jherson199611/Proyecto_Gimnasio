@@ -80,4 +80,32 @@ class socio {
         $stmt->execute();
         return $stmt->fetchall(pdo::fetch_assoc);
     }
+        public function registrarasistencia($dni, $observacion = '') {
+        $this->actualizarvencimientos();
+        $sql = "select s.id, s.nombres, s.apellidos, m.estado, m.fecha_fin
+                from socios s
+                inner join membresias m on s.id = m.socio_id
+                where s.dni = :dni
+                order by m.id desc limit 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindvalue(':dni', $dni);
+        $stmt->execute();
+        $socio = $stmt->fetch(pdo::fetch_assoc);
+
+        if (!$socio) {
+            return "el socio no existe o no tiene membresia registrada";
+        }
+
+        if ($socio['estado'] != 'vigente') {
+            return "acceso denegado: membresia " . $socio['estado'] . " (" . $socio['fecha_fin'] . ")";
+        }
+
+        $sqlinsert = "insert into asistencias (socio_id, fecha_hora, observacion) values (:socio_id, now(), :observacion)";
+        $stmtinsert = $this->db->prepare($sqlinsert);
+        $stmtinsert->bindvalue(':socio_id', $socio['id'], pdo::param_int);
+        $stmtinsert->bindvalue(':observacion', $observacion);
+        $stmtinsert->execute();
+
+        return "asistencia registrada: " . $socio['nombres'] . " " . $socio['apellidos'];
+    }
 }
