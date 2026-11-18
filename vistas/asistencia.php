@@ -37,3 +37,55 @@ $socios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $asistencias = $asistenciaController->consultar();
 
 ?>
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Asistencia</title>
+</head>
+
+<body>
+
+    <h2>Registrar Asistencia</h2>
+
+    <form action="" method="POST">
+
+        <label>Seleccionar Socio</label>
+        <select name="socio_id" required>
+
+            <option value="">Seleccionar socio</option>
+
+            <?php foreach ($socios as $socio) { ?>
+
+                <option value="<?php echo $socio["id"]; ?>">
+                    <?php echo $socio["nombres"] . " " . $socio["apellidos"]; ?>
+                </option>
+
+            <?php } ?>
+
+        </select>
+
+        <br><br>
+
+        <label>Fecha y Hora</label>
+        <input type="datetime-local" name="fecha_hora" required>
+
+        <br><br>
+
+        <label>Observación</label>
+        <input type="text" name="observacion" maxlength="150">
+
+        <br><br>
+
+        <button type="submit" name="registrar">
+            Registrar Asistencia
+        </button>
+
+    </form>
+
+    <hr>
+</body>
+</html>
