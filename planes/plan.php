@@ -6,38 +6,40 @@ class Plan {
 
     public function __construct() {
         $conexion = new Conexion();
-        $this->db = $conexion->getConexion();
+        $this->db =$conexion->getConexion();
     }
 
-    // Registrar un nuevo plan (ej: Básico, Estándar, Premium)
-    public function registrar($nombre, $precio, $duracion) {
-        $sql = "INSERT INTO planes (nombre, precio, duracion_dias) VALUES (:nombre, :precio, :duracion)";
+    // Registrar un nuevo plan
+    public function registrar($nombre, $precio,$duracion_dias, $descripcion = null) {$sql = "INSERT INTO planes (nombre, precio, duracion_dias, descripcion) 
+                VALUES (:nombre, :precio, :duracion_dias, :descripcion)";
         $stmt = $this->db->prepare($sql);
         
         return $stmt->execute([
-            ':nombre'   => $nombre,
-            ':precio'   => $precio,
-            ':duracion' => $duracion
+            ':nombre'        => $nombre,
+            ':precio'        => $precio,
+            ':duracion_dias' => $duracion_dias,
+            ':descripcion'   => $descripcion
         ]);
     }
 
-    // Actualizar precio y duración de un plan existente
-    public function actualizar($id_plan, $precio, $duracion) {
-        $sql = "UPDATE planes SET precio = :precio, duracion_dias = :duracion WHERE id = :id";
+    // Actualizar un plan existente
+    public function actualizar($id_plan, $precio,$duracion_dias, $descripcion = null) {$sql = "UPDATE planes 
+                SET precio = :precio, duracion_dias = :duracion_dias, descripcion = :descripcion 
+                WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         
         return $stmt->execute([
-            ':precio'   => $precio,
-            ':duracion' => $duracion,
-            ':id'       => $id_plan
+            ':precio'        => $precio,
+            ':duracion_dias' => $duracion_dias,
+            ':descripcion'   => $descripcion,
+            ':id'            => $id_plan
         ]);
     }
 
     // Consultar todos los planes registrados
     public function consultar() {
-        $sql = "SELECT * FROM planes ORDER BY id ASC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $sql = "SELECT id, nombre, precio, duracion_dias, descripcion FROM planes ORDER BY id ASC";
+        $stmt =$this->db->prepare($sql);$stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
