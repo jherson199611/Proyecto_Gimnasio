@@ -29,5 +29,27 @@ class AsignacionRutina
 
         return $filas;
     }
+   
+public function finalizar($id)
+{
+    $connect = Conexion::getInstancia()->getPDO();
+
+    $sql = "UPDATE asignaciones_rutina
+            SET estado = :estado, fecha_fin = CURDATE()
+            WHERE id = :id";
+
+    $stmt = $connect->prepare($sql);
+
+    $stmt->bindValue(":estado", "Finalizada", PDO::PARAM_STR);
+    $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    $filas = $stmt->rowCount();
+
+    Conexion::getInstancia()->cerrarConexion();
+
+    return $filas;
+} 
 }
 ?>
