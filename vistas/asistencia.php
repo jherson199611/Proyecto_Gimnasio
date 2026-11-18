@@ -38,7 +38,6 @@ $asistencias = $asistenciaController->consultar();
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -87,5 +86,30 @@ $asistencias = $asistenciaController->consultar();
     </form>
 
     <hr>
+
+    <h3>Consultar Asistencias</h3>
+
+    <table border="1">
+
+        <tr>
+            <th>ID Asistencia</th>
+            <th>ID Socio</th>
+            <th>Fecha y Hora</th>
+            <th>Observación</th>
+        </tr>
+
+        <?php foreach ($asistencias as $asistencia) { ?>
+
+        <tr>
+            <td><?php echo $asistencia["id"]; ?></td>
+            <td><?php echo $asistencia["socio_id"]; ?></td>
+            <td><?php echo $asistencia["fecha_hora"]; ?></td>
+            <td><?php echo $asistencia["observacion"]; ?></td>
+        </tr>
+
+        <?php } ?>
+
+    </table>
+
 </body>
 </html>
