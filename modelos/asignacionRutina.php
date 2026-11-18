@@ -50,6 +50,21 @@ public function finalizar($id)
     Conexion::getInstancia()->cerrarConexion();
 
     return $filas;
+}
+
+public function consultar()
+{
+    $connect = Conexion::getInstancia()->getPDO();
+
+    $sql = "SELECT * FROM asignaciones_rutina";
+
+    $stmt = $connect->prepare($sql);
+
+    $stmt->execute();
+
+    $asignaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $asignaciones;
 } 
 }
 ?>
