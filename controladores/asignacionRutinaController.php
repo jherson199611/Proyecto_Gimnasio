@@ -1,4 +1,3 @@
-Código completo:
 
 <?php
 require_once "../modelos/AsignacionRutina.php";
