@@ -1,3 +1,4 @@
+8
 <?php
 session_start();
 
@@ -49,85 +50,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Acceso - Gym System</title>
-<link rel="stylesheet" href="assets/estilos.css">
-
-<style>
-.login { max-width: 480px; margin: 50px auto; }
-.accesos { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
-.acceso input { display:none; }
-.acceso label {
-    display:block;
-    text-align:center;
-    padding:22px 10px;
-    border:2px solid #dce2ea;
-    border-radius:12px;
-    cursor:pointer;
-}
-.acceso input:checked + label {
-    border-color:#2378bd;
-    background:#edf6ff;
-}
-.acceso strong { display:block; margin-top:10px; }
-.acceso span { font-size:13px; color:#64748b; }
-.login button { width:100%; margin-top:18px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Gym System</title>
 </head>
 
 <body>
 
-<div class="panel login">
-
     <h1>GYM SYSTEM</h1>
-    <p class="muted">Sistema Integral de Gestión de Gimnasio</p>
+    <p>Sistema Integral de Gestión de Gimnasio</p>
 
     <?php if ($error): ?>
-        <div class="msg error">
-            <?= htmlspecialchars($error) ?>
-        </div>
+        <p><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
     <form method="POST">
 
-        <label>Selecciona tu tipo de acceso</label>
+        <p>Selecciona tu tipo de acceso:</p>
 
-        <div class="accesos">
+        <input type="radio" name="tipo_acceso"
+               value="administrador" required>
+        Administrador
 
-            <div class="acceso">
-                <input type="radio" name="tipo_acceso"
-                       id="admin" value="administrador" required>
-                <label for="admin">
-                    <span style="font-size:30px">🛡️</span>
-                    <strong>ADMINISTRADOR</strong>
-                    <span>Gestión del gimnasio</span>
-                </label>
-            </div>
+        <br>
 
-            <div class="acceso">
-                <input type="radio" name="tipo_acceso"
-                       id="cliente" value="cliente" required>
-                <label for="cliente">
-                    <span style="font-size:30px">🏋️</span>
-                    <strong>CLIENTE</strong>
-                    <span>Mi cuenta personal</span>
-                </label>
-            </div>
+        <input type="radio" name="tipo_acceso"
+               value="cliente" required>
+        Cliente
 
-        </div>
+        <br><br>
 
-        <label>Usuario</label>
+        <label>Usuario:</label>
         <input type="text" name="usuario" required>
 
-        <label>Contraseña</label>
+        <br><br>
+
+        <label>Contraseña:</label>
         <input type="password" name="password" required>
 
-        <button type="submit">INGRESAR AL SISTEMA</button>
+        <br><br>
+
+        <button type="submit">Ingresar</button>
 
     </form>
 
-</div>
-
 </body>
 </html>
+
