@@ -1,59 +1,57 @@
-
-<?php require_once '../includes/auth.php';
+<?php
+require_once '../includes/auth.php';
 require_once '../clases/Rol.php';
-$o=new Rol();
-$msg='';
-if($_SERVER['REQUEST_METHOD']==='POST'){
-    try{
-        $o->registrar($_POST['nombre'],$_POST['descripcion']);
-        $msg='Rol creado.';
-    }
-    catch(Throwable $e){
-        $msg='Error: '.$e->getMessage();
-    }
+
+$rol = new Rol();
+$mensaje = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $rol->registrar($_POST['nombre'], $_POST['descripcion']);
+    $mensaje = 'Rol registrado.';
 }
-$rows=$o->consultar();
-$base='../';
-require '../includes/header.php';
+
+$roles = $rol->consultar();
 ?>
-<div class="panel">
-<h1>Roles</h1>
-<?php if($msg):?>
-<div class="msg">
-<?=htmlspecialchars($msg)?>
-</div>
-<?php endif;
-?>
-<form method="post">
-<label>Nombre</label>
-<input name="nombre" required>
-<label>Descripción</label>
-<input name="descripcion">
-<button>Registrar rol</button>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Roles</title>
+</head>
+<body>
+
+<h2>Registrar rol</h2>
+<p><?php echo $mensaje; ?></p>
+
+<form method="POST">
+    <p>Nombre:</p>
+    <input type="text" name="nombre" required>
+
+    <p>Descripción:</p>
+    <input type="text" name="descripcion">
+
+    <br><br>
+    <button type="submit">Registrar</button>
 </form>
-</div>
-<div class="panel">
-<table>
-<tr>
-<th>ID</th>
-<th>Nombre</th>
-<th>Descripción</th>
-</tr>
-<?php foreach($rows as $r):?>
-<tr>
-<td>
-<?=$r['id']?>
-</td>
-<td>
-<?=htmlspecialchars($r['nombre'])?>
-</td>
-<td>
-<?=htmlspecialchars($r['descripcion'])?>
-</td>
-</tr>
-<?php endforeach;
-?>
+
+<h2>Roles registrados</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+    </tr>
+
+    <?php foreach ($roles as $r): ?>
+    <tr>
+        <td><?php echo $r['id']; ?></td>
+        <td><?php echo htmlspecialchars($r['nombre']); ?></td>
+        <td><?php echo htmlspecialchars($r['descripcion']); ?></td>
+    </tr>
+    <?php endforeach; ?>
 </table>
-</div>
-<?php require '../includes/footer.php';
-?>
+
+</body>
+</html>
